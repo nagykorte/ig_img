@@ -124,8 +124,68 @@ const links = [
 ]
 
 const IndexPage = () => {
+  function handleFileSelect(event) {
+    const amountOfFiles = event.target.files.length
+    // const file = event.target.files[0];
+    console.log(event)
+    if (amountOfFiles) {
+      for (const file of event.target.files) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = function () {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const maxSize = Math.max(img.width, img.height);
+            canvas.width = maxSize;
+            canvas.height = maxSize;
+
+            ctx.drawImage(img, (maxSize - img.width) / 2, (maxSize - img.height) / 2);
+
+            const resizedImage = canvas.toDataURL('image/png');
+
+            download(resizedImage, file.name);
+            displayResizedImage(resizedImage);
+          };
+        };
+        reader.readAsDataURL(file);
+
+      }
+    }
+  }
+  function download(canvas, name = 'filename.png') {
+    var link = document.createElement('a');
+    link.download = name;
+    link.href = canvas
+    link.click();
+  }
+  function displayResizedImage(resizedImage) {
+    const outputDiv = document.getElementById('output');
+    const imgElement = document.createElement('img');
+    imgElement.src = resizedImage;
+    imgElement.style.maxWidth = '100%';
+    imgElement.style.height = 'auto';
+
+    outputDiv.innerHTML = '';
+    outputDiv.appendChild(imgElement);
+  }
+  // window.addEventListener("load", () => {
+  //   document.getElementById('file-input').addEventListener('change', handleFileSelect);
+  // })
+
   return (
     <main style={pageStyles}>
+      <h1>Image Resizer</h1>
+
+      <div id="upload-btn-wrapper">
+          <button id="btn">Choose Image</button>
+        <input type="file" name="file" id="file-input" accept="image/*" multiple onChange={handleFileSelect} />
+      </div>
+
+      <div id="output"></div>
       <h1 style={headingStyles}>
         Congratulations
         <br />
