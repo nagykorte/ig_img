@@ -181,7 +181,7 @@ const IndexPage = () => {
       <h1>Image Resizer</h1>
 
       <div id="upload-btn-wrapper">
-          <button id="btn">Choose Image</button>
+          {/* <button id="btn">Choose Image</button> */}
         <input type="file" name="file" id="file-input" accept="image/*" multiple onChange={handleFileSelect} />
       </div>
 
